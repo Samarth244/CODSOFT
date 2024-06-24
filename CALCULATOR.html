@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f0f0; font-family: Arial, sans-serif; }
+        .calculator { border: 1px solid #ccc; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); width: 300px; }
+        .display { background-color: #333; color: #fff; font-size: 2em; text-align: right; padding: 20px; box-sizing: border-box; }
+        .buttons { display: grid; grid-template-columns: repeat(4, 1fr); }
+        .button { border: 1px solid #ccc; padding: 20px; font-size: 1.5em; background-color: #fff; cursor: pointer; text-align: center; box-sizing: border-box; transition: background-color 0.2s; }
+        .button:hover { background-color: #eaeaea; }
+        .operator { background-color: #f9a825; color: #fff; }
+        .operator:hover { background-color: #f57f17; }
+        .equals { grid-column: span 4; background-color: #4caf50; color: #fff; }
+        .equals:hover { background-color: #388e3c; }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="button">7</button>
+            <button class="button">8</button>
+            <button class="button">9</button>
+            <button class="button operator">/</button>
+            <button class="button">4</button>
+            <button class="button">5</button>
+            <button class="button">6</button>
+            <button class="button operator">*</button>
+            <button class="button">1</button>
+            <button class="button">2</button>
+            <button class="button">3</button>
+            <button class="button operator">-</button>
+            <button class="button">0</button>
+            <button class="button">.</button>
+            <button class="button" id="clear">C</button>
+            <button class="button operator">+</button>
+            <button class="button equals" id="equals">=</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const display = document.getElementById('display');
+            let currentInput = '', firstOperand = null, operator = null;
+
+            const updateDisplay = () => display.textContent = currentInput || '0';
+
+            const calculate = () => {
+                if (operator && firstOperand !== null) {
+                    currentInput = String(eval(`${firstOperand}${operator}${currentInput}`));
+                    firstOperand = null;
+                    operator = null;
+                }
+            };
+
+            document.querySelectorAll('.button').forEach(button => {
+                button.addEventListener('click', () => {
+                    if (button.id === 'clear') {
+                        currentInput = '';
+                        firstOperand = null;
+                        operator = null;
+                    } else if (button.id === 'equals') {
+                        calculate();
+                    } else if (button.classList.contains('operator')) {
+                        if (firstOperand === null) {
+                            firstOperand = parseFloat(currentInput);
+                        } else {
+                            calculate();
+                            firstOperand = parseFloat(currentInput);
+                        }
+                        operator = button.textContent;
+                        currentInput = '';
+                    } else {
+                        currentInput += button.textContent;
+                    }
+                    updateDisplay();
+                });
+            });
+
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>
